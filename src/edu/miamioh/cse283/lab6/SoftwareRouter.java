@@ -1,5 +1,7 @@
 package edu.miamioh.cse283.lab6;
 
+import java.util.ArrayList;
+
 
 /**
  * Software router template for CSE283 Lab 6, FS2014.
@@ -36,6 +38,7 @@ public class SoftwareRouter {
 	 */
 	public void receivePacket(Packet pkt) {
 		// once the correct outgoing link has been identified, call link.send(pkt, this); 
+		
 		fwdTable.send(pkt);
 		System.out.println("Packet sent");
 	}

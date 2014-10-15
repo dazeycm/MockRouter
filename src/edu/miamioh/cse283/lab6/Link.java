@@ -22,6 +22,6 @@ public class Link {
 	 * @param pkt is the packet to send on this link.
 	 */
 	public void send(Packet pkt) {
-	dst.receivePacket(pkt);
+		dst.receivePacket(pkt);
 	}
 }
