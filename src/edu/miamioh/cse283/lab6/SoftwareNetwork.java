@@ -17,11 +17,16 @@ public class SoftwareNetwork {
 		SoftwareRouter r2 = new SoftwareRouter();
 		
 		// build a link from r1->r2 that forwards all traffic:
-		//r1.addLink(new Link(r2), new Address(0), 0);
+		r1.addLink(new Link(r2), new Address(0), 0);
 				
 		// packets sent to r1 should wind up at r2:
 		//r1.receivePacket(new Packet(new Address(0), new Address(1)));
 		
-		System.out.println();
+	
+		int i = 5;
+		int j = 4;
+		
+		System.out.println(SoftwareRouter.matchingBits(i, j));
+		
 	}
 }
