@@ -16,10 +16,10 @@ public class SoftwareRouter {
 	 * Adds the given link and [start,stop] address range to this router's routing table.
 	 * 
 	 * @param link is the link that packets in the [start,stop] address range should be forwarded to.
-	 * @param start is the lower-bound of addresses for this link.
-	 * @param stop is the upper-bound of addresses for this link.
+	 * @param network_address is the network address for this link.
+	 * @param subnet_mask is the number of bits for the network prefix.
 	 */
-	public void addLink(Link link, Address start, Address stop) {
+	public void addLink(Link link, Address network_address, int subnet_mask) {
 		fwdTable = link;
 	}
 	
