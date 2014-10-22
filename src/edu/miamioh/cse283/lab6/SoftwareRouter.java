@@ -23,22 +23,24 @@ public class SoftwareRouter {
 	// removeLink: removes a link from the table
 	// receive packet: calculate longest prefix match; send packet on that link
 
-	protected ArrayList<tableEntry> fwdTable = new ArrayList<tableEntry>(); // contains
-																			// IP
-																			// range
-																			// and
-																			// link
+	protected ArrayList<tableEntry> fwdTable = new ArrayList<tableEntry>(); 
 
 	public class tableEntry {
 
-		public Link link;
-		public Address network_address;
-		public int subnet_mask;
-
-		public tableEntry(Link link, Address network_address, int subnet_mask) {
-			this.link = link;
-			this.network_address = network_address;
-			this.subnet_mask = subnet_mask;
+		private Link link;
+		private Address network_address;
+		private int subnet_mask;
+		private int subnetBits;
+		
+		public tableEntry (Link l, Address a, int sm){
+			this.link = l;
+			this.network_address = a;
+			this.subnet_mask = 0;
+			this.subnetBits = sm;
+			
+			for (int count = 0; count < subnetBits; count++){
+				this.subnet_mask = (this.subnet_mask >> 1) | 0x10000000;
+			}
 		}
 	}
 
@@ -65,9 +67,10 @@ public class SoftwareRouter {
 	 *            is the link to be removed from this router's routing table.
 	 */
 	public void removeLink(Link link) {
-		for (tableEntry i : fwdTable) {
+		for (tableEntry i : this.fwdTable) {
 			if (i.link == link) {
-				fwdTable.remove(i);
+				this.fwdTable.remove(i);
+				break;
 			}
 		}
 	}
@@ -88,24 +91,25 @@ public class SoftwareRouter {
 		// can't match longer than subnet mask
 		// need to look at bits up to subnetmask length in fwdtable and match to
 		// destination
-
-		// need to change this to only look up until subnetmask number of bits
-		for (tableEntry i : fwdTable) {
-			matchingBits(i.network_address.ip, pkt.src.ip);
-		}
-
-		System.out.println("Packet sent");
-	}
-
-	// might need to change this
-	public static int matchingBits(int a, int b) {
-		int result = a ^ b;
+		
+		int pktAddress = pkt.getDestination().getIP();
+		int indexNum = -1;
+		int longestNum = -1;
+		int temp = 0;
 		int count = 0;
-		while (result != 0) {
-			result = result >> 1;
+		
+		for (tableEntry i : fwdTable) {
+			temp = i.subnet_mask & pktAddress;
+			if (temp == i.network_address.ip && i.subnetBits > longestNum){
+				longestNum = i.subnetBits;
+				indexNum = count;
+			}
 			count++;
 		}
-		return 32 - count;
-
+		try	{
+			fwdTable.get(indexNum).link.send(pkt);
+		} catch (Exception e){
+			
+		}
 	}
 }

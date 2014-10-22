@@ -24,4 +24,6 @@ public class Link {
 	public void send(Packet pkt) {
 		dst.receivePacket(pkt);
 	}
+	
+
 }
